@@ -1,0 +1,7 @@
+- Built in profiler
+- Refactor of the component object
+- Change Log object into a singleton
+- Implement a secondary console
+- Implement batch rendering
+- Implement camera movement
+- Update Config object to accept commands to execute (e.g. map e1m1)

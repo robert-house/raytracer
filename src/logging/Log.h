@@ -1,0 +1,33 @@
+#pragma once
+#include <string>
+
+class Log
+{
+public:
+    enum LogLevel
+    {
+        ERR = 0,
+        WARNING,
+        INFO,
+        DEBUG
+    };
+
+    Log() { _logLevel = INFO; };
+    virtual ~Log() {};
+
+    virtual void log(LogLevel level, std::string message) = 0;
+
+    virtual void info(std::string message) = 0;
+    virtual void warn(std::string message) = 0;
+    virtual void debug(std::string message) = 0;
+    virtual void error(std::string message) = 0;
+
+    virtual void openSection(std::string sectionPrefix) = 0;
+    virtual void closeSection(std::string sectionPostfix) = 0;
+    virtual void setVerbosity(bool enableVerbose) = 0;
+
+protected:
+    LogLevel _logLevel;
+    bool _sectionOpen;
+    bool _verbose;
+};

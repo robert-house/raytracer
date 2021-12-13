@@ -1,0 +1,20 @@
+#pragma once
+
+#include "Renderer.h"
+
+class SoftwareRenderer : public Renderer
+{
+public:
+SoftwareRenderer(unsigned int width, unsigned int height, std::wstring name);
+~SoftwareRenderer();
+
+virtual void Init();
+virtual void Update();
+virtual void Render();
+virtual void Destroy();
+virtual void ReInit();
+
+virtual void ChangeResolution(unsigned int width, unsigned int height);
+
+private:
+};
