@@ -2,6 +2,11 @@
 *.ppm
 *.png
 .DS_Store
+build
+*.png
+*.txt
+*.cfg
+*.mtl
 
 # Prerequisites
 *.d

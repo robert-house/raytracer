@@ -1,80 +1,65 @@
-cmake_minimum_required(VERSION 3.15)
-project(runic)
+cmake_minimum_required(VERSION 3.0.0)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-include_directories(src)
-include_directories(src/config)
-include_directories(src/includes)
-include_directories(src/logging)
-include_directories(src/materials)
-include_directories(src/renderer)
-include_directories(src/scene)
-include_directories(src/shapes)
+project(raytracer VERSION 0.1.0)
 
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
+if (APPLE)
+    SET(CMAKE_CXX_FLAGS "")
+    set (CMAKE_CXX_STANDARD 17)
+elseif (WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /EHsc")
+else()
+    SET(CMAKE_CXX_FLAGS "-Wall -pthread")
+    set (CMAKE_CXX_STANDARD 17)
+endif()
 
-add_executable(eval
-        src/config/Config.cpp
-        src/config/Config.h
-        src/config/CVar.cpp
-        src/config/CVar.h
-        src/confic/CVarDescriptor.h
-        src/includes/DRand48.h
-        src/includes/ply.cpp
-        src/includes/ply.h
-        src/includes/random.h
-        src/includes/stb_image.h
-        src/includes/stb_image_write.h
-        src/includes/tiny_obj_loader.h
-        src/logging/ConsoleLog.cpp
-        src/logging/ConsoleLog.h
-        src/logging/Log.h
-        src/materials/Dielectric.cpp
-        src/materials/Dielectric.h
-        src/materials/DiffuseEmitter.cpp
-        src/materials/DiffuseEmitter.h
-        src/materials/Lambertian.cpp
-        src/materials/Lambertian.h
-        src/materials/Material.cpp
-        src/materials/Material.h
-        src/materials/MaterialFactory.cpp
-        src/materials/MaterialFactory.h
-        src/materials/Metal.cpp
-        src/materials/Metal.h
-        src/renderer/RayTracer.cpp
-        src/renderer/RayTracer.h
-        src/renderer/Renderer.cpp
-        src/renderer/Renderer.h
-        src/renderer/RenderTarget.cpp
-        src/renderer/RenderTarget.h
-        src/scene/Scene.cpp
-        src/scene/Scene.h
-        src/shapes/Rect.cpp
-        src/shapes/Rect.h
-        src/shapes/Shape.h
-        src/shapes/ShapeFactory.cpp
-        src/shapes/ShapeFactory.h
-        src/shapes/Sphere.cpp
-        src/shapes/Sphere.h
-        src/shapes/Triangle.cpp
-        src/shapes/Triangle.h
-        src/Camera.cpp
-        src/Camera.h
-        src/Color.cpp
-        src/Color.h
-        src/Component.cpp
-        src/Component.h
-        src/Core.h
-        src/HitRecord.cpp
-        src/HitRecord.h
-        src/main.cpp
-        src/Ray.cpp
-        src/Ray.h
-        src/Vec3.cpp
-        src/Vec3.h
-        src/Window.cpp
-        src/Window.h)
+INCLUDE_DIRECTORIES(SYSTEM ./external)
 
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+file(GLOB_RECURSE raytracer_src
+    "./src/*.cpp"
+    "./external/*.cpp" # Compile all external cpp files
+    "./external/*.c" # Compile all external c files
+)
+
+file(GLOB_RECURSE raytracer_tests
+    "./tests/*.test.cpp")
+
+find_package(nlohmann_json REQUIRED)
+find_package(catch2 REQUIRED)
+find_package(fmt REQUIRED)
+
+# Main Executable
+add_executable(raytracer ${raytracer_src})
+
+target_compile_definitions(raytracer PRIVATE)
+target_include_directories(raytracer PRIVATE Catch2::Catch2 fmt::fmt)
+target_link_libraries(raytracer Catch2::Catch2 fmt::fmt ${CMAKE_DL_LIBS})
+
+# Test Executable
+add_executable(raytracerT ${raytracer_tests})
+target_include_directories(raytracerT PRIVATE Catch2::Catch2)
+target_link_libraries(raytracerT Catch2::Catch2)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(raytracerT)
+enable_testing()
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
+
+
+# IF(APPLE)
+# add_custom_command(TARGET raytracer
+#         POST_BUILD
+#         COMMAND /bin/sh ../tools/compileShaders.sh
+#         )
+# ELSEIF (WIN32)
+# ELSE()
+# #add_custom_command(TARGET runic
+# #        POST_BUILD
+# #        COMMAND /bin/sh ../tools/compileShadersGNU.sh
+# #        )
+# ENDIF()

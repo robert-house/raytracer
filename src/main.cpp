@@ -22,14 +22,12 @@
 #include "logging/Log.h"
 #include "logging/ConsoleLog.h"
 #include "config/Config.h"
-#include "Window.h"
 
 // TODO:
 
 Scene* pScene;
 Camera* pCamera;
 RayTracer* pTracer;
-Window* pWindow = nullptr;
 std::shared_ptr<Log> pLog(new ConsoleLog(Log::INFO, false));
 
 static std::string VERSION = "0.1.202002";
@@ -70,7 +68,6 @@ int main(int argc,  const char* argv[])
     delete pScene;
     delete pCamera;
     delete pTracer;
-    delete pWindow;
 
     pLog.reset();
 
@@ -191,37 +188,6 @@ void oldLoop()
         }
 
         buffer = "";
-    }
-}
-
-// Updated Version with SDL integration
-void mainLoop()
-{
-    bool running = true;
-    SDL_Event e;
-    std::string buffer;
-
-    while (running)
-    {
-        // Immediately draw
-        pWindow->draw();
-
-        // Poll for SDL event
-        SDL_PollEvent(&e);
-
-        // Ignore all events unless it is an exit event
-        if (e.type == SDL_QUIT)
-        {
-            running = false;
-        }
-        if (e.type == SDL_KEYDOWN)
-        {
-            running = false;
-        }
-        if (e.type == SDL_MOUSEBUTTONDOWN)
-        {
-            running = false;
-        }
     }
 }
 
