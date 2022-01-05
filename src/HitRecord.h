@@ -1,5 +1,6 @@
 #pragma once
 #include "Ray.h"
+#include <glm/glm.hpp>
 
 class Material;
 
@@ -11,7 +12,7 @@ public:
     double u;
     double v;
     double t;
-    Vec3 p;
-    Vec3 normal;
+    glm::vec3 p;
+    glm::vec3 normal;
     Material* pMaterial;
 };

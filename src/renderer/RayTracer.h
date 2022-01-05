@@ -25,6 +25,7 @@
 #include "..//Ray.h"
 #include "..//Camera.h"
 #include "..//Random.h"
+#include <glm/glm.hpp>
 //#include "../config/CVarDescriptor.h"
 
 struct RTProfiling
@@ -77,9 +78,9 @@ private:
     std::mutex    _mut_rt;
 
     // Private members
-    Vec3 shootRay(const Ray& r, Scene* scene, int depth);
-    Vec3 iterativeShootRay(Ray& ray, Scene* scene);
-    Vec3 randomPointInSphere();
+    glm::vec3 shootRay(const Ray& r, Scene* scene, int depth);
+    glm::vec3 iterativeShootRay(Ray& ray, Scene* scene);
+    glm::vec3 randomPointInSphere();
     void renderScene(int samples);
     //void mtRender(int samples);
     double getRandom();
@@ -89,7 +90,7 @@ private:
     // Experimental
     long renderSLI();
     long renderSplitSamples();
-    void drawScanline(int samples, int scanLine, std::vector<Vec3>& line);
+    void drawScanline(int samples, int scanLine, std::vector<glm::vec3>& line);
     std::string renderingMode();
     Random random;
 };

@@ -5,16 +5,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(raytracer VERSION 0.1.0)
 
 if (APPLE)
-    SET(CMAKE_CXX_FLAGS "")
+    SET(CMAKE_CXX_FLAGS "-O3")
     set (CMAKE_CXX_STANDARD 17)
 elseif (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /EHsc")
 else()
-    SET(CMAKE_CXX_FLAGS "-Wall -pthread")
+    SET(CMAKE_CXX_FLAGS "-Wall -pthread -O3")
     set (CMAKE_CXX_STANDARD 17)
 endif()
 
-INCLUDE_DIRECTORIES(SYSTEM ./external)
+INCLUDE_DIRECTORIES(SYSTEM ./external /opt/homebrew/include /usr/include/catch2)
 
 file(GLOB_RECURSE raytracer_src
     "./src/*.cpp"
@@ -26,15 +26,16 @@ file(GLOB_RECURSE raytracer_tests
     "./tests/*.test.cpp")
 
 find_package(nlohmann_json REQUIRED)
-find_package(catch2 REQUIRED)
+find_package(Catch2 REQUIRED)
 find_package(fmt REQUIRED)
+find_package(spdlog REQUIRED)
 
 # Main Executable
 add_executable(raytracer ${raytracer_src})
 
 target_compile_definitions(raytracer PRIVATE)
-target_include_directories(raytracer PRIVATE Catch2::Catch2 fmt::fmt)
-target_link_libraries(raytracer Catch2::Catch2 fmt::fmt ${CMAKE_DL_LIBS})
+target_include_directories(raytracer PRIVATE Catch2::Catch2 fmt::fmt spdlog::spdlog)
+target_link_libraries(raytracer Catch2::Catch2 fmt::fmt spdlog::spdlog ${CMAKE_DL_LIBS})
 
 # Test Executable
 add_executable(raytracerT ${raytracer_tests})

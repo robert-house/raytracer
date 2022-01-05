@@ -47,22 +47,22 @@ void RenderTarget::Init(unsigned int width, unsigned int height)
     // I set the width as the inner dimension to keep the horizontal pixels contiguous in memory.
     // This will allow the beam to sweep from "left" to "right" and not thrash the hell out of the
     // cache.
-    _targetData = std::vector<std::vector<Vec3>>(_height, std::vector<Vec3>(_width));
+    _targetData = std::vector<std::vector<glm::vec3>>(_height, std::vector<glm::vec3>(_width));
 }
 
 // TODO: flat datastructure using algorithm x + stride * y
 //       where stride is the resolution width
-void RenderTarget::draw(int y, int x, Vec3 color)
+void RenderTarget::draw(int y, int x, glm::vec3 color)
 {
-    _targetData[y][x] = Vec3(color.x(), color.y(), color.z());
+    _targetData[y][x] = glm::vec3(color.x, color.y, color.z);
 }
 
-Vec3 RenderTarget::get(int y, int x) const
+glm::vec3 RenderTarget::get(int y, int x) const
 {
     return _targetData[y][x];
 }
 
-void RenderTarget::accumulate(int y, int x, Vec3 color)
+void RenderTarget::accumulate(int y, int x, glm::vec3 color)
 {
     _targetData[y][x] = _targetData[y][x] + color;
 }
@@ -130,11 +130,11 @@ void RenderTarget::writePPM(std::string path)
         for (int i = 0; i < _width; i++)
         {
             // Do actual write to file
-            file << _targetData[j][i].x()
+            file << _targetData[j][i].x
                 << " "
-                << _targetData[j][i].y()
+                << _targetData[j][i].y
                 << " "
-                << _targetData[j][i].z()
+                << _targetData[j][i].z
                 << "\n";
         }
     }
@@ -153,9 +153,9 @@ void RenderTarget::writePNG(std::string path)
     {
         for (int i = 0; i < _width; i++)
         {
-            image.push_back(_targetData[j][i].x());
-            image.push_back(_targetData[j][i].y());
-            image.push_back(_targetData[j][i].z());
+            image.push_back(_targetData[j][i].x);
+            image.push_back(_targetData[j][i].y);
+            image.push_back(_targetData[j][i].z);
         }
     }
     //stbi_write_png(fileName.c_str(), _width, _height, 3, image.data(), _width * sizeof(uint32_t));
@@ -172,7 +172,7 @@ void RenderTarget::clear()
     {
         for (int i = 0; i < _width; i++)
         {
-            _targetData[j][i] = Vec3(0.0, 0.0, 0.0);
+            _targetData[j][i] = glm::vec3(0.0, 0.0, 0.0);
         }
     }
 }

@@ -5,7 +5,7 @@
 // TODO: Add ability to nest sections
 // TODO: Add ability to set a log level for output
 
-ConsoleLog::ConsoleLog() : Log()
+ConsoleLog::ConsoleLog(std::string logID) : Log(logID)
 {
     _logLevel = INFO;
     _sectionOpen = false;
@@ -13,7 +13,7 @@ ConsoleLog::ConsoleLog() : Log()
     _errorTriggered = false;
 }
 
-ConsoleLog::ConsoleLog(LogLevel level, bool verbose)
+ConsoleLog::ConsoleLog(LogLevel level, bool verbose) : Log("console")
 {
     _logLevel = level;
     _sectionOpen = false;
@@ -64,8 +64,13 @@ void ConsoleLog::debug(std::string message)
 
 void ConsoleLog::error(std::string message)
 {
-    log(ERR, message);
+    logger->error(message);
     _errorTriggered = true;
+}
+
+void ConsoleLog::crit(std::string message)
+{
+    logger->critical(message);
 }
 
 void ConsoleLog::openSection(std::string sectionPrefix)

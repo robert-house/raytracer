@@ -4,27 +4,27 @@
 Color::Color()
 {
     // Default color is black
-    colorVector = Vec3(0.0, 0.0, 0.0);
+    colorVector = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Color::Color(double red, double green, double blue)
 {
-    colorVector = Vec3(red, green, blue);
+    colorVector = glm::vec3(red, green, blue);
 }
 
 Color::~Color() {}
 
 double Color::GetR()
 {
-    return colorVector.x();
+    return colorVector.x;
 }
 
 double Color::GetG()
 {
-    return colorVector.y();
+    return colorVector.y;
 }
 
 double Color::GetB()
 {
-    return colorVector.z();
+    return colorVector.z;
 }

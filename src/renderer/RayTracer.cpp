@@ -1,7 +1,7 @@
 #include "RayTracer.h"
 
 RayTracer::RayTracer()
-    : Renderer(0,0,L"Why?", std::shared_ptr<Log>(new ConsoleLog()))
+    : Renderer(0,0,L"Why?", std::shared_ptr<Log>(new ConsoleLog("TEST")))
 {
     // Default Constructor
 }
@@ -126,10 +126,10 @@ void RayTracer::registerCamera(Camera* pCamera)
 }
 
 // Private Members
-Vec3 RayTracer::shootRay(const Ray& r, Scene* scene, int depth)
+glm::vec3 RayTracer::shootRay(const Ray& r, Scene* scene, int depth)
 {
     HitRecord hitRecord;
-    Vec3 pixelColor;
+    glm::vec3 pixelColor;
 
     // Do hit detection on Shapes
     // TODO: Max Float or Double
@@ -137,8 +137,8 @@ Vec3 RayTracer::shootRay(const Ray& r, Scene* scene, int depth)
     if (scene->TestForCollision(r, 0.001, 1000000000000000000.0, hitRecord))
     {
         Ray scattered;
-        Vec3 attenuation;
-        Vec3 emitted = hitRecord.pMaterial->emittRay(hitRecord.u, hitRecord.v, hitRecord.p);
+        glm::vec3 attenuation;
+        glm::vec3 emitted = hitRecord.pMaterial->emittRay(hitRecord.u, hitRecord.v, hitRecord.p);
 
         if (r_disableShading->getValue() == 1)
         {
@@ -168,27 +168,27 @@ Vec3 RayTracer::shootRay(const Ray& r, Scene* scene, int depth)
     }
     else
     {
-        //Vec3 unitDirection = Vec3::unit_vector(r.getDirection());
+        //glm::vec3 unitDirection = glm::vec3::unit_vector(r.getDirection());
         //double t = 0.5 * (unitDirection.y() + 1.0);
 
         // Lerp Algorithm: blendedValue = (1 - t) * start + t * end
-        //pixelColor = (1.0 - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0);
+        //pixelColor = (1.0 - t) * glm::vec3(1.0, 1.0, 1.0) + t * glm::vec3(0.5, 0.7, 1.0);
 
         // NO GLOBAL LIGHTSOURCE
-        return Vec3(0, 0, 0);
+        return glm::vec3(0, 0, 0);
     }
 
     // Do internal color space correction here
     return pixelColor;
 }
 
-Vec3 RayTracer::iterativeShootRay(Ray& ray, Scene* scene)
+glm::vec3 RayTracer::iterativeShootRay(Ray& ray, Scene* scene)
 {
     HitRecord hitRecord;
-    Vec3 color;
-    Vec3 attenuation;
-    Vec3 emitted;
-    Vec3 totalAttenuation(1,1,1);
+    glm::vec3 color;
+    glm::vec3 attenuation;
+    glm::vec3 emitted;
+    glm::vec3 totalAttenuation(1,1,1);
     int depth = 0;
     int maxBounces = r_numberOfBounces->getValue();
 
@@ -249,16 +249,16 @@ void RayTracer::renderScene(int samples)
     int height = r_height->getValue();
     int width = r_width->getValue();
     Ray primaryRay;
-    Vec3 pixelColor = Vec3();
+    glm::vec3 pixelColor = glm::vec3();
 
     // TODO: Tile renderer
     for (int j = height - 1; j >= 0; j--)
     {
         for (int i = 0; i < width; i++)
         {
-            pixelColor.e[0] = 0;
-            pixelColor.e[1] = 0;
-            pixelColor.e[2] = 0;
+            pixelColor.x = 0;
+            pixelColor.y = 0;
+            pixelColor.z = 0;
 
             if (samples < 2)
             {
@@ -294,19 +294,19 @@ void RayTracer::renderScene(int samples)
             // targets for n threads or at least have some sort of buffer system so we can combine
             // the accumulated output before we tonemap or modify the colorspace
             // TODO: Investigate
-            _renderTarget.accumulate(j, i, Vec3(pixelColor.x(), pixelColor.y(), pixelColor.z()));
+            _renderTarget.accumulate(j, i, glm::vec3(pixelColor.x, pixelColor.y, pixelColor.z));
         }
     }
 }
 
 // TO DO WORK IN PROGRESS
-Vec3 RayTracer::randomPointInSphere()
+glm::vec3 RayTracer::randomPointInSphere()
 {
-    Vec3 p;
+    glm::vec3 p;
     do
     {
-        p = 2.0 * Vec3(getRandom(), getRandom(), getRandom()) - Vec3(1, 1, 1);
-    } while (p.squared_length() >= 1.0);
+        p = 2.0f * glm::vec3(getRandom(), getRandom(), getRandom()) - glm::vec3(1, 1, 1);
+    } while (p.x *p.x + p.y * p.y + p.z * p.z >= 1.0);
 
     return p;
 }
@@ -374,7 +374,7 @@ long RayTracer::renderSLI()
     std::vector<std::thread> threads(threadCount);
 
     // Setup Local Storage
-    std::vector<std::vector<Vec3>> localBuffer(height, std::vector<Vec3>(width));
+    std::vector<std::vector<glm::vec3>> localBuffer(height, std::vector<glm::vec3>(width));
 
     // Single Threaded
     if (threadCount == 1)
@@ -453,21 +453,21 @@ long RayTracer::renderSLI()
     {
         for (int i = 0; i < r_width->getValue(); i++)
         {
-            Vec3 finalColor = localBuffer[j][i];
+            glm::vec3 finalColor = localBuffer[j][i];
 
             // Divide the color values by the number of samples per pixel
             finalColor /= double(samples);
 
             // Cast back into good color space
-            finalColor = Vec3(sqrt(finalColor.x()), sqrt(finalColor.y()), sqrt(finalColor.z()));
+            finalColor = glm::vec3(sqrt(finalColor.x), sqrt(finalColor.y), sqrt(finalColor.z));
 
             // Tone map values greater than 255 to 255. This will prevent clipping
-            int r = std::max(0, std::min(int(255.99 * finalColor.x()), 255));
-            int g = std::max(0, std::min(int(255.99 * finalColor.y()), 255));
-            int b = std::max(0, std::min(int(255.99 * finalColor.z()), 255));
+            int r = std::max(0, std::min(int(255.99 * finalColor.x), 255));
+            int g = std::max(0, std::min(int(255.99 * finalColor.y), 255));
+            int b = std::max(0, std::min(int(255.99 * finalColor.z), 255));
 
             // Write to RenderTarget
-            _renderTarget.draw(j, i, Vec3(r, g, b));
+            _renderTarget.draw(j, i, glm::vec3(r, g, b));
         }
     }
 
@@ -528,28 +528,28 @@ long RayTracer::renderSplitSamples()
     {
         for (int i = 0; i < r_width->getValue(); i++)
         {
-            Vec3 finalColor = _renderTarget.get(j, i);
+            glm::vec3 finalColor = _renderTarget.get(j, i);
 
             // Divide the color values by the number of samples per pixel
             finalColor /= double(r_samplesPerPixel->getValue());
 
             // Cast back into good color space
-            finalColor = Vec3(sqrt(finalColor.x()), sqrt(finalColor.y()), sqrt(finalColor.z()));
+            finalColor = glm::vec3(sqrt(finalColor.x), sqrt(finalColor.y), sqrt(finalColor.z));
 
             // Tone map values greater than 255 to 255. This will prevent clipping
-            int r = std::max(0, std::min(int(255.99 * finalColor.x()), 255));
-            int g = std::max(0, std::min(int(255.99 * finalColor.y()), 255));
-            int b = std::max(0, std::min(int(255.99 * finalColor.z()), 255));
+            int r = std::max(0, std::min(int(255.99 * finalColor.x), 255));
+            int g = std::max(0, std::min(int(255.99 * finalColor.y), 255));
+            int b = std::max(0, std::min(int(255.99 * finalColor.z), 255));
 
             // Write to RenderTarget
-            _renderTarget.draw(j, i, Vec3(r, g, b));
+            _renderTarget.draw(j, i, glm::vec3(r, g, b));
         }
     }
 
     return elapsedTime;
 }
 
-void RayTracer::drawScanline(int samples, int scanLine, std::vector<Vec3>& line)
+void RayTracer::drawScanline(int samples, int scanLine, std::vector<glm::vec3>& line)
 {
     // Loop to sweep the "beam" from lower left to upper right
     // Important to view it as height x width so we can not thrash memory. This is because
@@ -577,13 +577,13 @@ void RayTracer::drawScanline(int samples, int scanLine, std::vector<Vec3>& line)
     double height = r_height->getValue();
     double width = r_width->getValue();
     Ray primaryRay;
-    Vec3 pixelColor = Vec3();
+    glm::vec3 pixelColor = glm::vec3();
 
     for (int i = 0; i < width; i++)
     {
-        pixelColor.e[0] = 0;
-        pixelColor.e[1] = 0;
-        pixelColor.e[2] = 0;
+        pixelColor.x = 0;
+        pixelColor.y = 0;
+        pixelColor.z = 0;
 
         if (samples < 2)
         {
@@ -627,7 +627,7 @@ void RayTracer::drawScanline(int samples, int scanLine, std::vector<Vec3>& line)
         // the accumulated output before we tonemap or modify the colorspace
         // TODO: Investigate
         line[i] = pixelColor;
-        //_renderTarget.accumulate(scanLine, i, Vec3(pixelColor.x(), pixelColor.y(), pixelColor.z()));
+        //_renderTarget.accumulate(scanLine, i, glm::vec3(pixelColor.x(), pixelColor.y(), pixelColor.z()));
     }
 }
 

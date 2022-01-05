@@ -34,7 +34,7 @@ Shape* ShapeFactory::MakeShape(std::deque<std::string>& shapeDescription)
         shapeDescription.pop_front();
 
         // It is a sphere
-        pShape = new Sphere(Vec3(posX, posY, posZ), size, nullptr);
+        pShape = new Sphere(glm::vec3(posX, posY, posZ), size, nullptr);
     }
     else if (shape.compare("RECT") == 0)
     {
@@ -72,7 +72,7 @@ Shape* ShapeFactory::MakeShape(std::deque<std::string>& shapeDescription)
         normalDirection = std::stod(shapeDescription.front());
         shapeDescription.pop_front();
 
-        pShape = new Rect(type, Vec3(x,y,z), length, width, normalDirection, nullptr);
+        pShape = new Rect(type, glm::vec3(x,y,z), length, width, normalDirection, nullptr);
     }
     else if (shape.compare("TRIANGLE") == 0)
     {
@@ -103,7 +103,7 @@ Shape* ShapeFactory::MakeShape(std::deque<std::string>& shapeDescription)
         size = std::stod(shapeDescription.front());
         shapeDescription.pop_front();
 
-        pShape = new Triangle(Vec3(v0x, v0y, v0z), Vec3(v1x, v1y, v1z), Vec3(v2x, v2y, v2z), size, nullptr);
+        pShape = new Triangle(glm::vec3(v0x, v0y, v0z), glm::vec3(v1x, v1y, v1z), glm::vec3(v2x, v2y, v2z), size, nullptr);
     }
 
     // Generate and assign the material
@@ -117,8 +117,8 @@ Shape* ShapeFactory::MakeShape(std::deque<std::string>& shapeDescription)
 
 Shape* ShapeFactory::GetRandomShape(int seedA, int seedB)
 {
-    Vec3 center(seedA + 0.9 * GetRandom(), 0.2, seedB + 0.9 * GetRandom());
-    Vec3 temp = center - Vec3(4, 0.0, 0.0);
+    glm::vec3 center(seedA + 0.9 * GetRandom(), 0.2, seedB + 0.9 * GetRandom());
+    glm::vec3 temp = center - glm::vec3(4, 0.0, 0.0);
     double length = temp.length();
 
     if (length > 0.9)

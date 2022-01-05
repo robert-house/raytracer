@@ -1,7 +1,8 @@
 #pragma once
 
 #include <chrono>
-#include "Vec3.h"
+#include <math.h>
+#include <glm/vec3.hpp>
 
 class Random
 {
@@ -9,8 +10,8 @@ public:
     Random();
     ~Random();
     double getRandom();
-    Vec3 randomInUnitSphere();
-    Vec3 randomInUnitDisk();
+    glm::vec3 randomInUnitSphere();
+    glm::vec3 randomInUnitDisk();
 
     // TODO: Feature to pre-generate a blue noise mask to use as the
     //       sampling pattern per pixel

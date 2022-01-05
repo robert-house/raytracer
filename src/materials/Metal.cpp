@@ -1,8 +1,8 @@
 #include "Metal.h"
 
-Metal::Metal (double albedoR, double albedoG, double albedoB, double roughness)
+Metal::Metal (float albedoR, float albedoG, float albedoB, float roughness)
 {
-    _albedo = Vec3(albedoR, albedoG, albedoB);
+    _albedo = glm::vec3(albedoR, albedoG, albedoB);
 
     if (roughness < 1)
     {
@@ -15,31 +15,31 @@ Metal::Metal (double albedoR, double albedoG, double albedoB, double roughness)
     }
 }
 
-bool Metal::scatterRay(const Ray& rayIn, const HitRecord& hitRecord, Vec3& attenuation, Ray& scattered)
+bool Metal::scatterRay(const Ray& rayIn, const HitRecord& hitRecord, glm::vec3& attenuation, Ray& scattered)
 {
-    Vec3 reflected = Reflect(Vec3::unit_vector(rayIn.getDirection()), hitRecord.normal);
+    glm::vec3 reflected = Reflect(glm::normalize(rayIn.getDirection()), hitRecord.normal);
     scattered = Ray(hitRecord.p, reflected + _roughness * randomDirection());
     attenuation = _albedo;
-    return (Vec3::dot(scattered.getDirection(), hitRecord.normal) > 0);
+    return (glm::dot(scattered.getDirection(), hitRecord.normal) > 0);
 }
 
-Vec3 Metal::getAlbedo()
+glm::vec3 Metal::getAlbedo()
 {
     return _albedo;
 }
 
-Vec3 Metal::randomDirection()
+glm::vec3 Metal::randomDirection()
 {
-    Vec3 p;
+    glm::vec3 p;
     do
     {
-        p = 2.0 * Vec3(getRandom(), getRandom(), getRandom()) - Vec3(1, 1, 1);
-    } while (p.squared_length() >= 1.0);
+        p = 2.0f * glm::vec3(getRandom(), getRandom(), getRandom()) - glm::vec3(1, 1, 1);
+    } while (p.x *p.x + p.y * p.y + p.z * p.z >= 1.0);
 
     return p;
 }
 
-Vec3 Metal::Reflect(const Vec3& v, const Vec3& n)
+glm::vec3 Metal::Reflect(const glm::vec3& v, const glm::vec3& n)
 {
-    return v - 2 * Vec3::dot(v, n) * n;
+    return v - 2 * glm::dot(v, n) * n;
 }

@@ -16,7 +16,7 @@ double Random::getRandom()
     return (double)((word >> 22u) ^ word) / UINT32_MAX;
 }
 
-Vec3 Random::randomInUnitSphere()
+glm::vec3 Random::randomInUnitSphere()
 {
     double theta = 2 * M_PI * getRandom();
     double phi = acos(2.0 * getRandom() - 1);
@@ -25,15 +25,15 @@ Vec3 Random::randomInUnitSphere()
     double y = r * sin(phi) * sin(theta);
     double z = r * cos(phi);
 
-    return Vec3(x, y, z);
+    return glm::vec3(x, y, z);
 }
 
-Vec3 Random::randomInUnitDisk()
+glm::vec3 Random::randomInUnitDisk()
 {
     float r = sqrtf(getRandom());
     float theta = 2 * M_PI * getRandom();
     float x = r * cos(theta);
     float y = r * sin(theta);
 
-    return Vec3(x, y, 0);
+    return glm::vec3(x, y, 0);
 }

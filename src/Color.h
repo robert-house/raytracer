@@ -1,5 +1,5 @@
 #pragma once
-#include "Vec3.h"
+#include <glm/vec3.hpp>
 
 class Color
 {
@@ -12,5 +12,5 @@ public:
     double GetG();
     double GetB();
 private:
-    Vec3 colorVector;
+    glm::vec3 colorVector;
 };

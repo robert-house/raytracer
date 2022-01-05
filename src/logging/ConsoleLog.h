@@ -3,10 +3,11 @@
 #include <iostream>
 #include <vector>
 
+
 class ConsoleLog final : public Log
 {
 public:
-    ConsoleLog();
+    ConsoleLog(std::string logID);
     ConsoleLog(LogLevel logLevel, bool verbose);
     ~ConsoleLog();
 
@@ -16,6 +17,7 @@ public:
     void warn(std::string message) override;
     void debug(std::string message) override;
     void error(std::string message) override;
+    void crit(std::string message) override;
 
     void openSection(std::string sectionPrefix) override;
     void closeSection(std::string sectionPostfix) override;
@@ -26,4 +28,5 @@ protected:
     std::string logout(LogLevel level, std::string message); // TODO: Change the name. Its bad
     std::vector<std::string> _buffer;
     bool _errorTriggered;
+
 };

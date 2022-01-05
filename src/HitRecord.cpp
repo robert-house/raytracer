@@ -3,6 +3,6 @@
 HitRecord::HitRecord() 
 {
     t = 0;
-    p = Vec3();
-    normal = Vec3();
+    p = glm::vec3();
+    normal = glm::vec3();
 }

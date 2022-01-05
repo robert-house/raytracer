@@ -1,86 +1,86 @@
 #pragma once
-#include "Vec3.h"
 #include "Ray.h"
 #include "Random.h"
 #include <math.h>
 #include <random>
+#include <glm/glm.hpp>
 
-constexpr double PI = 3.14159265358979323846;
+constexpr float PI = 3.14159265358979323846;
 
 class Camera
 {
 public:
     Camera();
-    Camera(Vec3 cameraAt, Vec3 lookAt, Vec3 vUp, double vfov, double aspect, double aperture, double focus_dist);
+    Camera(glm::vec3 cameraAt, glm::vec3 lookAt, glm::vec3 vUp, float vfov, float aspect, float aperture, float focus_dist);
     ~Camera();
 
     void Init();
-    void UpdateVFOV(double fov);
-    void UpdateCameraPosition(double x, double y, double z);
-    void UpdateCameraDirection(double x, double y, double z);
-    void updateAspectRatio(double aspectRatio);
+    void UpdateVFOV(float fov);
+    void UpdateCameraPosition(float x, float y, float z);
+    void UpdateCameraDirection(float x, float y, float z);
+    void updateAspectRatio(float aspectRatio);
 
-    Ray getRay(double u, double v);
+    Ray getRay(float u, float v);
 
-    Vec3 _origin;
-    Vec3 _lookDirection;
-    Vec3 _upVector;
-    Vec3 lowerLeftCorner;
-    Vec3 horizontal;
-    Vec3 vertical;
+    glm::vec3 _origin;
+    glm::vec3 _lookDirection;
+    glm::vec3 _upVector;
+    glm::vec3 lowerLeftCorner;
+    glm::vec3 horizontal;
+    glm::vec3 vertical;
 private:
-    double _aperture;
-    double _fieldOfView;
-    double _focusDistance;
-    double _aspectRatio;
-    Vec3 u, v, w;
-    Vec3 randInUnitDisk();
-    double GetRandom();
+    float _aperture;
+    float _fieldOfView;
+    float _focusDistance;
+    float _aspectRatio;
+    glm::vec3 u, v, w;
+    glm::vec3 randInUnitDisk();
+    float GetRandom();
     //Random random;
 };
 
 /*
 #pragma once
-#include "Vec3.h"
+#include "glm::vec3.h"
 #include "Ray.h"
 #include <math.h>
 #include "gdt/math/vec.h"
 
-constexpr double PI = M_PI;
+constexpr float PI = M_PI;
 
 class Camera
 {
 public:
     Camera();
-    Camera(Vec3 cameraAt, Vec3 lookAt, Vec3 vUp, double vfov, double aspect, double aperture, double focus_dist);
-    Camera(gdt::vec3f from, gdt::vec3f at, gdt::vec3f up);
+    Camera(glm::vec3 cameraAt, glm::vec3 lookAt, glm::vec3 vUp, float vfov, float aspect, float aperture, float focus_dist);
+    Camera(gdt::glm::vec3f from, gdt::glm::vec3f at, gdt::glm::vec3f up);
     ~Camera();
 
     void Init();
-    void UpdateVFOV(double fov);
-    void UpdateCameraPosition(double x, double y, double z);
-    void UpdateCameraDirection(double x, double y, double z);
+    void UpdateVFOV(float fov);
+    void UpdateCameraPosition(float x, float y, float z);
+    void UpdateCameraDirection(float x, float y, float z);
 
-    Ray getRay(double u, double v);
+    Ray getRay(float u, float v);
 
-    Vec3 _origin;
-    Vec3 _lookDirection;
-    Vec3 _upVector;
-    Vec3 lowerLeftCorner;
-    Vec3 horizontal;
-    Vec3 vertical;
+    glm::vec3 _origin;
+    glm::vec3 _lookDirection;
+    glm::vec3 _upVector;
+    glm::vec3 lowerLeftCorner;
+    glm::vec3 horizontal;
+    glm::vec3 vertical;
 
-    gdt::vec3f from;
-    gdt::vec3f at;
-    gdt::vec3f up;
+    gdt::glm::vec3f from;
+    gdt::glm::vec3f at;
+    gdt::glm::vec3f up;
 
 private:
-    double _aperture;
-    double _fieldOfView;
-    double _focusDistance;
-    double _aspectRatio;
-    Vec3 u, v, w;
-    Vec3 randInUnitDisk();
-    double GetRandom();
+    float _aperture;
+    float _fieldOfView;
+    float _focusDistance;
+    float _aspectRatio;
+    glm::vec3 u, v, w;
+    glm::vec3 randInUnitDisk();
+    float GetRandom();
 };
 */

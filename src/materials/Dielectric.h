@@ -1,17 +1,18 @@
 #pragma once
 #include "Material.h"
 #include <random>
+#include <glm/glm.hpp>
 
 class Dielectric : public Material
 {
 public:
-    Dielectric(double ri);
-    virtual bool scatterRay(const Ray& rayIn, const HitRecord& hitRecord, Vec3& attenuation, Ray& scattered) ;
-    virtual Vec3 getAlbedo();
-    double ref_idx;
+    Dielectric(float ri);
+    virtual bool scatterRay(const Ray& rayIn, const HitRecord& hitRecord, glm::vec3& attenuation, Ray& scattered) ;
+    virtual glm::vec3 getAlbedo();
+    float ref_idx;
 
-    Vec3 Reflect(const Vec3& v, const Vec3& n) ;
-    bool Refract(const Vec3& v, const Vec3& n, double ni_over_nt, Vec3& refracted) ;
-    double Schlick(double cosine, double ref_idx) ;
-    Vec3 randomDirection() ;
+    glm::vec3 Reflect(const glm::vec3& v, const glm::vec3& n) ;
+    bool Refract(const glm::vec3& v, const glm::vec3& n, float ni_over_nt, glm::vec3& refracted) ;
+    float Schlick(float cosine, float ref_idx) ;
+    glm::vec3 randomDirection() ;
 };

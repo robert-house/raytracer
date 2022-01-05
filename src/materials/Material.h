@@ -2,6 +2,7 @@
 #include "../Ray.h"
 #include "../HitRecord.h"
 #include <random>
+#include <glm/glm.hpp>
 
 enum MaterialType
 {
@@ -15,10 +16,10 @@ enum MaterialType
 class Material
 {
 public:
-    virtual bool scatterRay(const Ray& rayIn, const HitRecord& hitRecord, Vec3& attenuation, Ray& scattered)  = 0;
-    virtual Vec3 emittRay(double u, double v,  Vec3& p)  { return Vec3(0.0, 0.0, 0.0); };
-    virtual Vec3 getAlbedo() = 0;
+    virtual bool scatterRay(const Ray& rayIn, const HitRecord& hitRecord, glm::vec3& attenuation, Ray& scattered)  = 0;
+    virtual glm::vec3 emittRay(double u, double v,  glm::vec3& p)  { return glm::vec3(0.0, 0.0, 0.0); };
+    virtual glm::vec3 getAlbedo() = 0;
 
 protected:
-    double getRandom() ;
+    float getRandom() ; // TODO: Change to new fast hash random algo and change seed in Random.cpp
 };

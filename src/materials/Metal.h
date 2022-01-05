@@ -1,18 +1,19 @@
 #pragma once
 #include "Material.h"
 #include <random>
+#include <glm/glm.hpp>
 
 class Metal : public Material
 {
 public:
-    Metal(double albedoR, double albedoG, double albedoB, double roughness);
-    virtual bool scatterRay(const Ray& rayIn, const HitRecord& hitRecord, Vec3& attenuation, Ray& scattered) ;
-    virtual Vec3 getAlbedo();
+    Metal(float albedoR, float albedoG, float albedoB, float roughness);
+    virtual bool scatterRay(const Ray& rayIn, const HitRecord& hitRecord, glm::vec3& attenuation, Ray& scattered) ;
+    virtual glm::vec3 getAlbedo();
 
 private:
-    Vec3 randomDirection() ;
-    Vec3 Reflect(const Vec3& v, const Vec3& n) ;
+    glm::vec3 randomDirection() ;
+    glm::vec3 Reflect(const glm::vec3& v, const glm::vec3& n) ;
 
-    double _roughness;
-    Vec3 _albedo;
+    float _roughness;
+    glm::vec3 _albedo;
 };

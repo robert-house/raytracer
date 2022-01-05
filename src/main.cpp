@@ -42,6 +42,8 @@ int main(int argc,  const char* argv[])
     std::string configFile;
     std::string fileName;
 
+    std::shared_ptr<spdlog::logger> log = spdlog::stdout_color_st("console");
+
     // Enable verbose mode
     pLog->setVerbosity(true);
 
@@ -52,10 +54,10 @@ int main(int argc,  const char* argv[])
     }
     else
     {
-        configFile = "./config.cfg";
+        configFile = "../config.cfg";
     }
 
-    fileName = "./cornellBox.txt";
+    fileName = "../cornellBox.txt";
     //pWindow = new Window();
 
     // TODO arg for whether we want sdl2 or cli
@@ -93,8 +95,8 @@ void init(std::string fileName, std::string configFile)
     //scene.GenerateRandomScene();
 
     // Setup Camera
-    Vec3 cameraAt(278, 278, -800);
-    Vec3 lookAt(278, 278, 0);
+    glm::vec3 cameraAt(278, 278, -800);
+    glm::vec3 lookAt(278, 278, 0);
     double dist_to_focus = (cameraAt - lookAt).length();
     double aperture = 0.1;
 
@@ -103,7 +105,7 @@ void init(std::string fileName, std::string configFile)
     // TODO: Come up with a better solution to aspect ratio calculations and settings
     double width = Config::getInstance().getCVar("r_width")->getValue();
     double height = Config::getInstance().getCVar("r_height")->getValue();
-    pCamera = new Camera(cameraAt, lookAt, Vec3(0, 1, 0), 40, 1.0 / 1.0, aperture, dist_to_focus);
+    pCamera = new Camera(cameraAt, lookAt, glm::vec3(0, 1, 0), 40, 1.0 / 1.0, aperture, dist_to_focus);
     pCamera->UpdateCameraPosition(287, 287, -800);
 
     // TODO: Investigate calling conventions for pointers. If the camera object pointer was

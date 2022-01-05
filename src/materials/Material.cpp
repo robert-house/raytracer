@@ -1,6 +1,6 @@
 #include "Material.h"
 
-double Material::getRandom()
+float Material::getRandom()
 {
     thread_local std::mt19937 generator(std::random_device{}());
     std::uniform_real_distribution<double> distribution(0.0, 1.0);

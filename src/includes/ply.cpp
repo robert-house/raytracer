@@ -54,13 +54,13 @@
 
 
   double LAmag,LAsum; int LAi,LAj,LAk;
-#define VEC3_ZERO(a)	       { a[0]=a[1]=a[2]=0; }
-#define VEC3_NEG(a,b)           { a[0]= -b[0]; a[1]= -b[1];a[2]= -b[2];}
-#define VEC3_V_OP_V(a,b,op,c)  { a[0] = b[0] op c[0]; \
+#define glm::vec3_ZERO(a)	       { a[0]=a[1]=a[2]=0; }
+#define glm::vec3_NEG(a,b)           { a[0]= -b[0]; a[1]= -b[1];a[2]= -b[2];}
+#define glm::vec3_V_OP_V(a,b,op,c)  { a[0] = b[0] op c[0]; \
     a[1] = b[1] op c[1];                              \
     a[2] = b[2] op c[2];                              \
   }
-#define VEC3_ASN_OP(a,op,b)      {a[0] op b[0]; a[1] op b[1]; a[2] op b[2];}
+#define glm::vec3_ASN_OP(a,op,b)      {a[0] op b[0]; a[1] op b[1]; a[2] op b[2];}
 
 #define DOTPROD3(a, b)   (a[0]*b[0] + a[1]*b[1] + a[2]*b[2])
 

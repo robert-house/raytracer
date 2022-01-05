@@ -8,7 +8,7 @@ class Component
 {
 public:
     // If no log is given, create a new console log to pass in
-    Component() { _pLog = std::shared_ptr<Log>(new ConsoleLog()); }
+    Component() { _pLog = std::shared_ptr<Log>(new ConsoleLog("console")); }
     Component(std::shared_ptr<Log> log) { _pLog = log; }
     ~Component();
 

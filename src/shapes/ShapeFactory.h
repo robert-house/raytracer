@@ -8,7 +8,7 @@
 #include "Rect.h"
 #include "../materials/MaterialFactory.h"
 #include "../materials/Material.h"
-#include "..//Vec3.h"
+#include <glm/glm.hpp>
 
 #include "../logging/Log.h"
 

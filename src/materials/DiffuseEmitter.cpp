@@ -2,7 +2,7 @@
 
 DiffuseEmitter::DiffuseEmitter(double r, double g, double b)
 {
-    _albedo = Vec3(r,g,b);
+    _albedo = glm::vec3(r,g,b);
 }
 
 DiffuseEmitter::~DiffuseEmitter()
@@ -10,17 +10,17 @@ DiffuseEmitter::~DiffuseEmitter()
 
 }
 
-bool DiffuseEmitter::scatterRay(const Ray& rayIn, const HitRecord& hitRecord, Vec3& attenuation, Ray& scattered)
+bool DiffuseEmitter::scatterRay(const Ray& rayIn, const HitRecord& hitRecord, glm::vec3& attenuation, Ray& scattered)
 {
     return false;
 }
 
-Vec3 DiffuseEmitter::getAlbedo()
+glm::vec3 DiffuseEmitter::getAlbedo()
 {
     return _albedo;
 }
 
-Vec3 DiffuseEmitter::emittRay(double u, double v,  Vec3& p)
+glm::vec3 DiffuseEmitter::emittRay(double u, double v,  glm::vec3& p)
 {
     // Simple emitting material that emits its albedo
     return _albedo;
