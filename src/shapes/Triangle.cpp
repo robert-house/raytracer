@@ -1,6 +1,6 @@
 #include "Triangle.h"
 
-Triangle::Triangle(Vec3 v0, Vec3 v1, Vec3 v2, double size, Material* pMaterial)
+Triangle::Triangle(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2, float size, Material* pMaterial)
 {
     _v0 = v0;
     _v1 = v1;
@@ -9,58 +9,32 @@ Triangle::Triangle(Vec3 v0, Vec3 v1, Vec3 v2, double size, Material* pMaterial)
     _pMaterial = pMaterial;
 }
 
-bool Triangle::hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecord)
+bool Triangle::hit(const Ray& ray, float tMin, float tMax, HitRecord& hitRecord)
 {
-    // Calculate the normal
-    Vec3 normal = Vec3::cross(_v1 - _v0, _v2 - _v0);
-    double denominator = Vec3::dot(normal, normal);
-    double NdotRayDirection = Vec3::dot(normal, ray.getDirection());
+    glm::vec3 v0v1 = _v0 - _v1;
+    glm::vec3 v0v2 = _v2 - _v0;
+    glm::vec3 pvec = glm::cross(ray.getDirection(), v0v2);
+    float determinant = glm::dot(pvec, v0v1);
 
-    // Test is Ray is parallel
-    if (abs(NdotRayDirection) < kEpsilon)
-    {
-        return false;
-    }
+    if (fabs(determinant) < kEpsilon) return false;
 
-    // Find P
+    float invDeterminant = 1 / determinant;
 
-    double d = Vec3::dot(normal, _v0);
-    double t = (Vec3::dot(normal, ray.getOrigin()) + d) / NdotRayDirection;
+    glm::vec3 tvec = ray.getOrigin() - _v0;
 
+    float u = glm::dot(tvec,pvec) * invDeterminant;
+    if (u < 0 || u > 1) return false;
 
-    Vec3 P = ray.pointAtParameter(t);
-
-    Vec3 C;
-
-    // Test to see if triangle lies within
-    Vec3 edge0 = _v1 - _v0;
-    Vec3 vp0 = P - _v0;
-    C = Vec3::cross(edge0, vp0);
-    if (Vec3::dot(normal, C) < 0)
-    {
-        return false;
-    }
-
-    Vec3 edge1 = _v2 - _v1;
-    Vec3 vp1 = P - _v1;
-    C = Vec3::cross(edge1, vp1);
-    if (Vec3::dot(normal, C) < 0)
-    {
-        return false;
-    }
-
-    Vec3 edge2 = _v0 - _v2;
-    Vec3 vp2 = P - _v2;
-    C = Vec3::cross(edge2, vp2);
-    if (Vec3::dot(normal, C) < 0)
-    {
-        return false;
-    }
+    glm::vec3 qvec = glm::cross(tvec, v0v1);
+    float v = glm::dot(ray.getDirection(), pvec) * invDeterminant;
+    if (v < 0 || u + v > 1) return false;
 
     // Detected a hit, fill out hitrecord
-    hitRecord.normal = normal;
-    hitRecord.p = P;
-    hitRecord.t = t;
+    hitRecord.normal = _normal;
+    hitRecord.u = u;
+    hitRecord.v = v;
+    hitRecord.t = glm::dot(v0v2, qvec) * invDeterminant;
+    hitRecord.p = ray.pointAtParameter(hitRecord.t);
     hitRecord.pMaterial = _pMaterial;
 
     return true;
@@ -69,10 +43,10 @@ bool Triangle::hit(const Ray& ray, double tMin, double tMax, HitRecord& hitRecor
 std::string Triangle::toString()
 {
     std::ostringstream ss;
-
-    ss << "Vertices: " << _v0.toString() << ","
-                       << _v1.toString() << ","
-                       << _v2.toString()
+    // TODO: Add other 2 dims
+    ss << "Vertices: " << std::to_string(_v0.x) << ","
+                       << std::to_string(_v1.x) << ","
+                       << std::to_string(_v2.x)
        << "Size: " << _size;
 
     return ss.str();

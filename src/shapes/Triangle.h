@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
+#include <sstream>
 #include "Shape.h"
 #include "../HitRecord.h"
+
+#include <glm/glm.hpp>
 
 
 constexpr float kEpsilon = 1e-8;
@@ -9,15 +12,16 @@ constexpr float kEpsilon = 1e-8;
 class Triangle : public Shape
 {
 public:
-    Triangle(Vec3 vertA, Vec3 vertB, Vec3 vertC, double size, Material* pMaterial);
+    Triangle(glm::vec3 vertA, glm::vec3 vertB, glm::vec3 vertC, float size, Material* pMaterial);
 
-    virtual bool hit(const Ray& r, double tMin, double tMax, HitRecord& hitRecord);
+    virtual bool hit(const Ray& r, float tMin, float tMax, HitRecord& hitRecord);
     virtual std::string toString();
 
-    Vec3 _v0;
-    Vec3 _v1;
-    Vec3 _v2;
-    double _size;
+    glm::vec3 _v0;
+    glm::vec3 _v1;
+    glm::vec3 _v2;
+    float _size;
+    glm::vec3 _normal;
 
 private:
 };
