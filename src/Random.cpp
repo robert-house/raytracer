@@ -1,25 +1,19 @@
 #include "Random.h"
 
-Random::Random() : rnd(std::chrono::high_resolution_clock::now().time_since_epoch().count())
+Random::Random()
 {
-    distribution = std::uniform_real_distribution<double>(0.0, 1.0);
-    //customDistribution = std::uniform_real_distribution<double>(from, to);
-    //customDistribution = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
-Random::~Random() {}
+Random::~Random() {} // Nothing to break down, leave empty
 
+// New and FAST!
+// https://www.reedbeta.com/blog/hash-functions-for-gpu-rendering/
 double Random::getRandom()
 {
-    return distribution(rnd);
-}
-
-double Random::getRandom(double from, double to)
-{
-    //customDistribution.reset();
-    //customDistribution = std::uniform_real_distribution<double>(from, to);
-    //return customDistribution(rnd);
-    return distribution(rnd);
+    uint32_t state = rngState;
+    rngState = rngState * 747796405u + 2891336453u;
+    uint32_t word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+    return (double)((word >> 22u) ^ word) / UINT32_MAX;
 }
 
 Vec3 Random::randomInUnitSphere()
