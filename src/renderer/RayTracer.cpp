@@ -134,7 +134,7 @@ glm::vec3 RayTracer::shootRay(const Ray& r, Scene* scene, int depth)
     // Do hit detection on Shapes
     // TODO: Max Float or Double
     // TODO: Iterative Renderer
-    if (scene->TestForCollision(r, 0.001, 1000000000000000000.0, hitRecord))
+    if (scene->TestForCollision(r, 0.001, INFINITY, hitRecord))
     {
         Ray scattered;
         glm::vec3 attenuation;
@@ -260,10 +260,12 @@ void RayTracer::renderScene(int samples)
             pixelColor.y = 0;
             pixelColor.z = 0;
 
+            u = double(i / width);
+            v = double(j / height);
+
             if (samples < 2)
             {
-                u = double(i / width);
-                v = double(j / height);
+
                 // Transform point in screenspace to world space
                 // TODO: Remove this statement from here
                 // TODO: Check if calling getRay is causing performance issues

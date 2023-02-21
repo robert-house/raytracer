@@ -67,9 +67,15 @@ void Camera::updateAspectRatio(float aspectRatio)
 
 Ray Camera::getRay(float s, float t)
 {
-    glm::vec3 rd = _aperture / 2 * randInUnitDisk(); // TODO: Fix bug regarding crash with Random object
-    glm::vec3 offset = u * rd.x + v * rd.y;
-    return Ray(_origin + offset, lowerLeftCorner + s * horizontal + t * vertical - _origin - offset);
+    //glm::vec3 rd = _aperture / 2.0f * randInUnitDisk(); // TODO: Fix bug regarding crash with Random object
+    //glm::vec3 offset = u * rd.x + v * rd.y;
+    //return Ray(_origin + offset, lowerLeftCorner + s * horizontal + t * vertical - _origin - offset);
+    // TODO: rewrite this
+    //glm::vec3 rd = _aperture / (2.0f * randInUnitDisk()); // TODO: Fix bug regarding crash with Random object
+    //glm::vec3 offset = (u * rd.x) + (v * rd.y);
+    glm::vec3 offset(0);
+    glm::vec3 dir = lowerLeftCorner + s * horizontal + t * vertical - _origin - offset;
+    return Ray(_origin + offset, dir);
 }
 
 // FIXME: 9% runtime
@@ -78,10 +84,10 @@ glm::vec3 Camera::randInUnitDisk()
     /*glm::vec3 p;
     do
     {
-        p = 2.0 * glm::vec3(GetRandom(), GetRandom(), 0) - glm::vec3(1, 1, 0);
+        p = 2.0f * glm::vec3(GetRandom(), GetRandom(), 0) - glm::vec3(1, 1, 0);
     } while (glm::dot(p, p) >= 1.0);
 
-    return p; */
+    return p;*/
 
     // TODO: Get from 4% to lower
     float r = sqrtf(GetRandom());
@@ -89,7 +95,8 @@ glm::vec3 Camera::randInUnitDisk()
     float x = r * cos(theta);
     float y = r * sin(theta);
 
-    return glm::vec3(x, y, 0);
+    return glm::vec3(x, y, 0); // TODO: Causes a bug with DOF. Figure this out!
+    //return glm::vec3(1, 1, 1);
 }
 
 float Camera::GetRandom()
@@ -97,6 +104,11 @@ float Camera::GetRandom()
     //thread_local std::mt19937 generator(std::random_device{}());
     //std::uniform_real_distribution<float> distribution(0.0, 1.0);
     //return distribution(generator);
+
+    uint32_t state = rngState;
+    rngState = rngState * 747796405u + 2891336453u;
+    uint32_t word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+    return (float)((word >> 22u) ^ word) / UINT32_MAX;
 
     return 1.0f; // TODO: Fix Random Issue
 }

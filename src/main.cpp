@@ -22,6 +22,7 @@
 #include "logging/Log.h"
 #include "logging/ConsoleLog.h"
 #include "config/Config.h"
+#include "includes/argparse/argparse.hpp"
 
 // TODO:
 
@@ -29,6 +30,7 @@ Scene* pScene;
 Camera* pCamera;
 RayTracer* pTracer;
 std::shared_ptr<Log> pLog(new ConsoleLog(Log::INFO, false));
+bool benchmark = false;
 
 static std::string VERSION = "0.1.202002";
 
@@ -41,24 +43,82 @@ int main(int argc,  const char* argv[])
 {
     std::string configFile;
     std::string fileName;
+    argparse::ArgumentParser program("raytracer");
+
+    program.add_argument("-b", "--benchmark")
+        .help("Help")
+        .default_value(false)
+        .implicit_value(true);
+
+    program.add_argument("-v", "--verbose")
+        .help("Enable Verbose Logging")
+        .default_value(false)
+        .implicit_value(true);
+
+    program.add_argument("--config")
+        .help("Location of configuration file to load");
+
+    program.parse_args(argc, argv);
+    program.add_description("This is a test program intended for free use");
+
+    if (program["-b"] == true)
+        std::cout << "Benchmark Mode Enabled" << std::endl;
+
+    if (program["-v"] == true)
+        std::cout << "Verbose Mode Enabled" << std::endl;
+
+    if (program.is_used("--config"))
+        std::cout << program.get("--config") << std::endl;
 
     std::shared_ptr<spdlog::logger> log = spdlog::stdout_color_st("console");
 
     // Enable verbose mode
     pLog->setVerbosity(true);
 
-    // cornellbox.txt 256 256 128 8 278 278 -800 8
-    if (argc == 2)
-    {
-        configFile = argv[1];
-    }
-    else
-    {
-        configFile = "../config.cfg";
-    }
+    fileName = "../testTriangle.txt";
 
-    fileName = "../cornellBox.txt";
-    //pWindow = new Window();
+    if (program["-b"] == true)
+    {
+        fileName = "../triangleScene.txt";
+
+        printHeader();
+
+        // Init Logger
+        pLog->log(Log::INFO, "Log Has Started");
+
+        // Attach Logger to config
+        Config::getInstance().attachLogger(pLog);
+
+        // Setup the Scene
+        pScene = new Scene(pLog.get());
+        pScene->LoadFromFile(fileName);
+        //scene.GenerateRandomScene();
+
+        // Setup Camera
+        glm::vec3 cameraAt(0, 0, -1.0);
+        glm::vec3 lookAt(0, 0, 1);
+        double dist_to_focus = (cameraAt - lookAt).length();
+        double aperture = 0.0;
+
+        pTracer = new RayTracer(pLog);
+
+        // TODO: Come up with a better solution to aspect ratio calculations and settings
+        double width = Config::getInstance().getCVar("r_width")->getValue();
+        double height = Config::getInstance().getCVar("r_height")->getValue();
+        pCamera = new Camera(cameraAt, lookAt, glm::vec3(0, 1, 0), 90, 16.0 / 9.0, aperture, dist_to_focus);
+        //pCamera->UpdateCameraPosition(287, 287, -800);
+        pCamera->UpdateCameraPosition(0, 0, -390);
+
+        // TODO: Investigate calling conventions for pointers. If the camera object pointer was
+        //       registered before the creation of the object, it will return nullptr.
+        //       Perhaps modify the register functions to throw an error if its nullptr?
+        pTracer->registerScene(pScene);
+        pTracer->registerCamera(pCamera);
+        Config::getInstance().loadConfigFile("../benchmark.cfg");
+        pTracer->render();
+
+        return 0;
+    }
 
     // TODO arg for whether we want sdl2 or cli
     init(fileName, configFile); // This being commented out was creating the segfault. Singleton delete error?
@@ -95,24 +155,27 @@ void init(std::string fileName, std::string configFile)
     //scene.GenerateRandomScene();
 
     // Setup Camera
-    glm::vec3 cameraAt(278, 278, -800);
-    glm::vec3 lookAt(278, 278, 0);
+    //glm::vec3 cameraAt(278, 278, -800);
+    glm::vec3 cameraAt(0, 0, -1.0);
+    glm::vec3 lookAt(0, 0, 1);
     double dist_to_focus = (cameraAt - lookAt).length();
-    double aperture = 0.1;
+    double aperture = 0.0;
 
     pTracer = new RayTracer(pLog);
 
     // TODO: Come up with a better solution to aspect ratio calculations and settings
     double width = Config::getInstance().getCVar("r_width")->getValue();
     double height = Config::getInstance().getCVar("r_height")->getValue();
-    pCamera = new Camera(cameraAt, lookAt, glm::vec3(0, 1, 0), 40, 1.0 / 1.0, aperture, dist_to_focus);
-    pCamera->UpdateCameraPosition(287, 287, -800);
+    pCamera = new Camera(cameraAt, lookAt, glm::vec3(0, 1, 0), 90, 16.0 / 9.0, aperture, dist_to_focus);
+    //pCamera->UpdateCameraPosition(287, 287, -800);
+    //pCamera->UpdateCameraPosition(0, 0, -390);
 
     // TODO: Investigate calling conventions for pointers. If the camera object pointer was
     //       registered before the creation of the object, it will return nullptr.
     //       Perhaps modify the register functions to throw an error if its nullptr?
     pTracer->registerScene(pScene);
     pTracer->registerCamera(pCamera);
+
 
     // Cannot decide whether I want to go with the paradigm of setState->render() or render(state);
     //pTracer->render();

@@ -20,13 +20,7 @@ glm::vec3 Ray::getDirection() const
     return B;
 }
 
-glm::vec3 Ray::pointAtParameter(double t) const
+glm::vec3 Ray::pointAtParameter(float t) const
 {
-    //return A + t * B;
-
-    double bx = B.x * t;
-    double by = B.y * t;
-    double bz = B.z * t;
-
-    return glm::vec3(A.x + bx, A.y + by, A.z + bz);
+    return A + (t * B);
 }

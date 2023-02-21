@@ -36,6 +36,7 @@ private:
     glm::vec3 u, v, w;
     glm::vec3 randInUnitDisk();
     float GetRandom();
+    uint32_t rngState = 2048;
     //Random random;
 };
 

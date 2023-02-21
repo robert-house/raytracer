@@ -11,7 +11,7 @@ public:
 
     glm::vec3 getOrigin() const;
     glm::vec3 getDirection() const;
-    glm::vec3 pointAtParameter(double t) const;
+    glm::vec3 pointAtParameter(float t) const;
 
 private:
     glm::vec3 A;

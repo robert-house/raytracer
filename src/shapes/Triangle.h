@@ -24,4 +24,6 @@ public:
     glm::vec3 _normal;
 
 private:
+    glm::vec3 A;
+    glm::vec3 B;
 };
