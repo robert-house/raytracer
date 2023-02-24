@@ -68,7 +68,10 @@ int main(int argc,  const char* argv[])
         std::cout << "Verbose Mode Enabled" << std::endl;
 
     if (program.is_used("--config"))
+    {
         std::cout << program.get("--config") << std::endl;
+        configFile = program.get("--config");
+    }
 
     std::shared_ptr<spdlog::logger> log = spdlog::stdout_color_st("console");
 
