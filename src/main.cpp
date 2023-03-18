@@ -78,7 +78,7 @@ int main(int argc,  const char* argv[])
     // Enable verbose mode
     pLog->setVerbosity(true);
 
-    fileName = "../testTriangle.txt";
+    fileName = "../cornellBox.txt";
 
     if (program["-b"] == true)
     {
@@ -158,19 +158,21 @@ void init(std::string fileName, std::string configFile)
     //scene.GenerateRandomScene();
 
     // Setup Camera
-    //glm::vec3 cameraAt(278, 278, -800);
-    glm::vec3 cameraAt(0, 0, -1.0);
-    glm::vec3 lookAt(0, 0, 1);
+    glm::vec3 cameraAt(278, 278, -300);
+    //glm::vec3 cameraAt(0, 0, -1.0);
+    glm::vec3 lookAt(278, 278, 1); // TODO: Investigate why 0,0,1 is not centered
     double dist_to_focus = (cameraAt - lookAt).length();
     double aperture = 0.0;
+    double fov = 90;
 
     pTracer = new RayTracer(pLog);
 
     // TODO: Come up with a better solution to aspect ratio calculations and settings
     double width = Config::getInstance().getCVar("r_width")->getValue();
     double height = Config::getInstance().getCVar("r_height")->getValue();
-    pCamera = new Camera(cameraAt, lookAt, glm::vec3(0, 1, 0), 90, 16.0 / 9.0, aperture, dist_to_focus);
+    pCamera = new Camera(cameraAt, lookAt, glm::vec3(0, 1, 0), fov, width / height, aperture, dist_to_focus);
     //pCamera->UpdateCameraPosition(287, 287, -800);
+    //pCamera->UpdateCameraPosition(0, 0, -400);
     //pCamera->UpdateCameraPosition(0, 0, -390);
 
     // TODO: Investigate calling conventions for pointers. If the camera object pointer was
