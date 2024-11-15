@@ -1,7 +1,5 @@
 #pragma once
 #include <string>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 class Log
 {
@@ -15,7 +13,7 @@ public:
         CRIT
     };
 
-    Log(std::string logID) { _logLevel = INFO; logger = spdlog::get(logID);};
+    Log(std::string logID) { _logLevel = INFO; };
     virtual ~Log() {};
 
     virtual void log(LogLevel level, std::string message) = 0;
@@ -34,5 +32,5 @@ protected:
     LogLevel _logLevel;
     bool _sectionOpen;
     bool _verbose;
-    std::shared_ptr<spdlog::logger> logger;
+    // std::shared_ptr<spdlog::logger> logger;
 };

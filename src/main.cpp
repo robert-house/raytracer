@@ -73,8 +73,6 @@ int main(int argc,  const char* argv[])
         configFile = program.get("--config");
     }
 
-    std::shared_ptr<spdlog::logger> log = spdlog::stdout_color_st("console");
-
     // Enable verbose mode
     pLog->setVerbosity(true);
 

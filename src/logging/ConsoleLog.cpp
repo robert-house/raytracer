@@ -64,13 +64,13 @@ void ConsoleLog::debug(std::string message)
 
 void ConsoleLog::error(std::string message)
 {
-    logger->error(message);
+    log(ERR, message);
     _errorTriggered = true;
 }
 
 void ConsoleLog::crit(std::string message)
 {
-    logger->critical(message);
+    log(CRIT, message);
 }
 
 void ConsoleLog::openSection(std::string sectionPrefix)
